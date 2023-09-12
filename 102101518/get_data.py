@@ -19,4 +19,4 @@ def get_data(cid):
         data = pattern.findall(final_res)
         return data
     except Exception as e:
-        print("执行get_data失败：", e )
+        print("执行get_data失败：", e)
