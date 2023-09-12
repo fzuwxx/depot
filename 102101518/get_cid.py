@@ -6,7 +6,7 @@ import json
 
 def get_cid(bvid):
 
-    # 视频地址：https://www.bilibili.com/video/BV1PK4y1b7dt?t=1
+    # 视频地址：https://www.bilibili.com/video/bvid?t=1
     url = 'https://api.bilibili.com/x/player/pagelist?bvid='+str(bvid)+'&jsonp=jsonp'
     res = requests.get(url).text
     # 将获取的网页json编码字符串转换为python对象
