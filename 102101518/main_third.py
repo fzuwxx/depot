@@ -19,38 +19,47 @@ danmu_file = 'danmu_data.csv'
 
 
 def get_bvid(page, pos):
-    """
-    通过搜索api“https://api.bilibili.com/x/web-interface/search/all/v2?page=&keyword=”获取前300个视频的bvid，
-    其中page为1-15，keyword为“日本核污染水排海”
-    """
-    # 构造搜索视频的API请求URL
-    _url = 'https://api.bilibili.com/x/web-interface/search/all/v2?page=' + str(page+1) + '&keyword=日本核污染水排海'
+    try:
+        """
+            通过搜索api“https://api.bilibili.com/x/web-interface/search/all/v2?page=&keyword=”获取前300个视频的bvid，
+            其中page为1-15，keyword为“日本核污染水排海”
+            """
+        # 构造搜索视频的API请求URL
+        _url = 'https://api.bilibili.com/x/web-interface/search/all/v2?page=' + str(page + 1) + '&keyword=日本核污染水排海'
 
-    # 构造请求头，包括用户代理信息和cookie
-    _headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69',
-        'cookie': "buvid3=84494823-6825-4308-FB2B-6A7A8368B42566066infoc; b_nut=1684242766; CURRENT_FNVAL=4048;"
-                  " _uuid=21010568AE-754A-8159-C754-6D5C27F10107B866445infoc; buvid4=42FAC9B1-0422-0A2A-8A64-82F"
-                  "43936FFA871340-022022019-H0Dgo27GdvKzjHRGWFdXiw%3D%3D; buvid_fp=b5f7b890d23b3c02c06cc18eaa6417"
-                  "d3; rpdid=|(RYkm|~JJu0J'uY)RkRk~~|; i-wanna-go-back=-1; FEED_LIVE_VERSION=V8; header_theme_ver"
-                  "sion=CLOSE; home_feed_column=5; DedeUserID=1460134606; DedeUserID__ckMd5=187e8dfdff780cc7; b_ut"
-                  "=5; nostalgia_conf=-1; CURRENT_QUALITY=64; PVID=1; browser_resolution=1488-742; SESSDATA=587edd3"
-                  "2%2C1709184545%2Cd3355%2A913IpTnXrMod4HMCSeYYRaYLOo9QDYXObvfOLMTnd7StvuIEF-hseEzI4HHTs0WmbXVblGz"
-                  "gAABgA; bili_jct=9d23bd6f285f8004da547bbfbfa382f4"}
+        # 构造请求头，包括用户代理信息和cookie
+        _headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69',
+            'cookie': "buvid3=84494823-6825-4308-FB2B-6A7A8368B42566066infoc; b_nut=1684242766; CURRENT_FNVAL=4048;"
+                      " _uuid=21010568AE-754A-8159-C754-6D5C27F10107B866445infoc; buvid4=42FAC9B1-0422-0A2A-8A64-82F"
+                      "43936FFA871340-022022019-H0Dgo27GdvKzjHRGWFdXiw%3D%3D; buvid_fp=b5f7b890d23b3c02c06cc18eaa6417"
+                      "d3; rpdid=|(RYkm|~JJu0J'uY)RkRk~~|; i-wanna-go-back=-1; FEED_LIVE_VERSION=V8; header_theme_ver"
+                      "sion=CLOSE; home_feed_column=5; DedeUserID=1460134606; DedeUserID__ckMd5=187e8dfdff780cc7; b_ut"
+                      "=5; nostalgia_conf=-1; CURRENT_QUALITY=64; PVID=1; browser_resolution=1488-742; SESSDATA=587edd3"
+                      "2%2C1709184545%2Cd3355%2A913IpTnXrMod4HMCSeYYRaYLOo9QDYXObvfOLMTnd7StvuIEF-hseEzI4HHTs0WmbXVblGz"
+                      "gAABgA; bili_jct=9d23bd6f285f8004da547bbfbfa382f4"}
 
-    res = requests.get(url=_url, headers=_headers).text     # 发起GET请求，获取响应结果的文本形
-    json_dict = json.loads(res)     # 将获取的响应结果解析为Python字典对象
-    return json_dict["data"]["result"][11]["data"][pos]["bvid"]     # 返回视频的bvid号
+        res = requests.get(url=_url, headers=_headers).text  # 发起GET请求，获取响应结果的文本形
+        json_dict = json.loads(res)  # 将获取的响应结果解析为Python字典对象
+        return json_dict["data"]["result"][11]["data"][pos]["bvid"]  # 返回视频的bvid号
 
+    # 异常处理
+    except Exception as e:
+        print("执行get_bvid报错：", e)       # 打印错误信息
 
 def get_cid(bvid):
-    # 构造API请求URL
-    url = 'https://api.bilibili.com/x/player/pagelist?bvid=' + str(bvid) + '&jsonp=jsonp'
-    res = requests.get(url).text        # 发起GET请求，获取响应结果的文本形式
-    json_dict = json.loads(res)     # 将获取的网页json编码字符串转换为Python对象
-    print(json_dict)        # 打印整个转换后的结果，用于调试
-    return json_dict["data"][0]["cid"]      # 返回获取到的视频信息的cid值
+    try:
+        # 构造API请求URL
+        url = 'https://api.bilibili.com/x/player/pagelist?bvid=' + str(bvid) + '&jsonp=jsonp'
+        res = requests.get(url).text  # 发起GET请求，获取响应结果的文本形式
+        json_dict = json.loads(res)  # 将获取的网页json编码字符串转换为Python对象
+        # print(json_dict)        # 打印整个转换后的结果，用于调试
+        return json_dict["data"][0]["cid"]  # 返回获取到的视频信息的cid值
+
+    # 异常处理
+    except Exception as e:
+        print("执行get_cid报错：", e)       # 打印错误信息
 
 
 def get_data(cid):
@@ -102,7 +111,7 @@ def ciyuntu():
 
     # 异常处理
     except Exception as e:
-        print("词云图制作报错：", e)        # 打印错误信息
+        print("执行词云图制作报错：", e)        # 打印错误信息
 
 
 def print_danmu():
@@ -134,31 +143,40 @@ def print_danmu():
 
 
 def main(page):
-    # 由于一页有20个视频,因此循环20次
-    for j in range(20):
-        save_to_file(get_data(get_cid(get_bvid(page, j))))      # 调用函数获取弹幕
+    try:
+        # 由于一页有20个视频,因此循环20次
+        for j in range(20):
+            save_to_file(get_data(get_cid(get_bvid(page, j))))  # 调用函数获取弹幕
+
+    # 异常处理
+    except Exception as e:
+        print("执行main报错：", e)        # 打印错误信息
 
 
 if __name__ == '__main__':
+    try:
+        # 记录开始时间
+        start_time = time.time()
 
-    # 记录开始时间
-    start_time = time.time()
+        pool = multiprocessing.Pool(15)  # 创建一个进程池，最大进程数为15
+        # 循环创建15个进程，并指派给进程池执行
+        for i in range(15):
+            pool.apply_async(main(i), args=(i, danmu_file))  # main(i)表示爬取第i页弹幕数据
+        pool.close()  # 关闭进程池，表示不再接受新的任务
+        pool.join()  # 等待所有进程任务完成
+        print("All workers finished")
+        print_danmu()  # 输出数量前20的弹幕
+        ciyuntu()  # 词云图制作
 
-    pool = multiprocessing.Pool(15)     # 创建一个进程池，最大进程数为15
-    # 循环创建15个进程，并指派给进程池执行
-    for i in range(15):
-        pool.apply_async(main(i), args=(i, danmu_file))     # main(i)表示爬取第i页弹幕数据
-    pool.close()        # 关闭进程池，表示不再接受新的任务
-    pool.join()     # 等待所有进程任务完成
-    print("All workers finished")
-    print_danmu()       # 输出数量前20的弹幕
-    ciyuntu()       # 词云图制作
+        # 记录结束时间
+        end_time = time.time()
 
-    # 记录结束时间
-    end_time = time.time()
+        # 计算运行时间
+        run_time = end_time - start_time
 
-    # 计算运行时间
-    run_time = end_time - start_time
+        # 打印运行时间
+        print(f"运行时间：{run_time:.3f}秒")
 
-    # 打印运行时间
-    print(f"运行时间：{run_time:.3f}秒")
+    # 异常处理
+    except Exception as e:
+        print("报错：", e)        # 打印错误信息
